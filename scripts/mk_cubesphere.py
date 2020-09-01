@@ -1,7 +1,7 @@
 
 '''
 
-File to make cubephere data, input for netCDF only.
+File to make cubesphere data, input for netCDF only.
 
 '''
 
