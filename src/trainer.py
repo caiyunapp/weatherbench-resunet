@@ -1,6 +1,7 @@
-from HyperModel import HyperModel
-# from WarpModel import WarpModel
-# from cubesphere_unet_net import CubeSphereUNet2D
+from models.hyperbolic import HyperModel
+# from models.warp import WarpModel
+# from models.unet import CubeSphereUNet2D
+
 import os
 import torch
 import torch.nn as nn
@@ -12,7 +13,11 @@ from pathlib import Path
 import numpy as np
 import arrow
 
+from dataset import dataset_train, dataset_eval, dataset_test, dio_std
+
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
+
 
 time_str = arrow.now().format('YYYYMMDD_HHmmss')
 model_path = Path(f'./tt-{time_str}')
@@ -22,9 +27,6 @@ logging.basicConfig(level=logging.INFO, filename=log_file, filemode='w', format=
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.info(configs.__dict__)
-
-from prepare_data import dataset_train, dataset_eval, dataset_test, dio_std
-
 
 continue_training = False     # if continue training, load model
 s=(0,-1,-1)
@@ -39,10 +41,12 @@ optimizer = torch.optim.Adam(network.parameters(), lr=configs.lr, weight_decay=c
 lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.2, patience=1, verbose=True, min_lr=0.00004)
 target_ratio = torch.from_numpy(np.squeeze(dio_std[0,0]))
 
+
 def RMSE(y_pred, y_true):
     loss = torch.mean((y_pred - y_true) ** 2, dim=[1, 2, 3, 4])
     loss = torch.mean(torch.sqrt(loss))
     return loss
+
 
 def train_once(input_x, input_y):
     network.train()
@@ -211,15 +215,18 @@ def test(dataloader_test):
     loss_test = loss_test / dataset_test.__len__()
     loss_test = loss_test * target_ratio
     return loss_test.item()
-    
+
+
 def save_model_test():
     torch.save({'net_test': network.state_dict(), 
                 'optimizer_test':optimizer.state_dict()}, model_path / f'checkpoint.chk')
+
 
 def load_model_test(chk_path):
     checkpoint = torch.load(chk_path)
     network.load_state_dict(checkpoint['net_test'])
     optimizer.load_state_dict(checkpoint['optimizer_test'])
+
 
 def continue_train(chk_path):
     checkpoint = torch.load(chk_path)
@@ -228,7 +235,6 @@ def continue_train(chk_path):
 
 
 if __name__ == '__main__':
-
     logger.info('loading train dataloader')
     dataloader_train = DataLoader(dataset_train, batch_size=configs.batch_size, shuffle=True, num_workers=configs.n_cpu)
     logger.info('loading eval dataloader')

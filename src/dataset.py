@@ -27,6 +27,7 @@ pred_gap = pred_shift // pred_length
 
 logger = logging.getLogger()
 
+
 class DatasetTrain(Dataset):
     def __init__(self, years):
         dio = []
@@ -140,6 +141,7 @@ class DatasetTrain(Dataset):
     def __getitem__(self, index):
         return self.di[index], self.do[index]
 
+
 class DatasetEval(Dataset):
     def __init__(self, years):
         dio = []
@@ -241,6 +243,7 @@ class DatasetEval(Dataset):
 
     def __getitem__(self, index):
         return self.di[index], self.do[index]
+
 
 class DatasetTest(Dataset):
     def __init__(self, years):
@@ -357,6 +360,7 @@ class DatasetTest(Dataset):
 
     def __getitem__(self, index):
         return self.di[index], self.do[index]
+
 
 # train
 dataset_train = DatasetTrain(years_train)

@@ -1,4 +1,5 @@
-from cubesphere_unet_net import CubeSphereUNet2D
+from cubesphere_unet import CubeSphereUNet2D
+
 import torch
 import torch.nn as nn
 from config import configs
@@ -16,7 +17,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.info(configs.__dict__)
 
-from prepare_data import dataset_test, dio_mean, dio_std
+from dataset import dataset_test, dio_mean, dio_std
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
