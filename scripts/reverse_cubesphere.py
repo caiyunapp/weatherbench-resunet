@@ -1,7 +1,7 @@
 
 '''
 
-File to reverse cubephere to map data, you can get input npy file by running predict.py
+File to reverse cubesphere to map data, you can get input npy file by running predict.py
 
 '''
 
